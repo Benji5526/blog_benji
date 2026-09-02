@@ -1,0 +1,620 @@
+<title>곰돌이 옷장</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap">
+<style>
+  :root{
+    --cream:#FBF1DF;
+    --panel:#F3E4C6;
+    --card:#FFFDF8;
+    --honey:#E8A23C;
+    --honey-deep:#C97F22;
+    --ink:#4A2F22;
+    --ink-soft:#8B5E3C;
+    --blush:#EFA9A0;
+    --border:#E3C99B;
+    --shadow: 0 10px 26px rgba(74,47,34,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --cream:#241A12;
+      --panel:#33261A;
+      --card:#3B2C1E;
+      --honey:#F0AE4E;
+      --honey-deep:#D89232;
+      --ink:#F5E6D0;
+      --ink-soft:#D3B892;
+      --blush:#E8938A;
+      --border:#5A452F;
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --cream:#241A12;
+    --panel:#33261A;
+    --card:#3B2C1E;
+    --honey:#F0AE4E;
+    --honey-deep:#D89232;
+    --ink:#F5E6D0;
+    --ink-soft:#D3B892;
+    --blush:#E8938A;
+    --border:#5A452F;
+    --shadow: 0 10px 26px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Gowun Dodum','Apple SD Gothic Neo',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:28px 16px 48px;
+  }
+  .page{
+    width:100%;
+    max-width:980px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+  }
+  h1{
+    font-family:'Jua',sans-serif;
+    font-weight:400;
+    font-size:clamp(28px,4vw,38px);
+    margin:0;
+    color:var(--ink);
+    text-wrap:balance;
+  }
+  .subtitle{
+    margin:6px 0 0;
+    color:var(--ink-soft);
+    font-size:15px;
+  }
+  .toolbar{
+    display:flex;
+    gap:10px;
+  }
+  .tool-btn{
+    font-family:'Gowun Dodum',sans-serif;
+    font-size:14px;
+    border:2px solid var(--border);
+    background:var(--card);
+    color:var(--ink);
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .tool-btn:hover{ background:var(--panel); }
+  .tool-btn:active{ transform:scale(0.96); }
+  .tool-btn.primary{
+    background:var(--honey);
+    border-color:var(--honey-deep);
+    color:#3A2410;
+    font-weight:700;
+  }
+  .tool-btn.primary:hover{ background:var(--honey-deep); }
+  .tool-btn:focus-visible, button:focus-visible{
+    outline:3px solid var(--honey-deep);
+    outline-offset:2px;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    gap:20px;
+    align-items:start;
+  }
+  @media (max-width:760px){
+    .layout{ grid-template-columns:1fr; }
+  }
+
+  .stage{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 50% 38%, color-mix(in srgb, var(--honey) 20%, var(--card)) 0%, var(--card) 62%);
+    border:2px solid var(--border);
+    border-radius:28px;
+    box-shadow:var(--shadow);
+    padding:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:420px;
+    overflow:hidden;
+  }
+  .stage::before{
+    content:"";
+    position:absolute;
+    inset:14px;
+    border:2px dashed color-mix(in srgb, var(--honey) 55%, transparent);
+    border-radius:20px;
+    opacity:.5;
+    pointer-events:none;
+  }
+  .sparkle{
+    position:absolute;
+    font-size:20px;
+    opacity:.55;
+    animation:float 6s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .sparkle{ animation:none; }
+  }
+  .sparkle.s1{ top:12%; left:10%; animation-delay:0s; }
+  .sparkle.s2{ top:20%; right:12%; animation-delay:1.5s; }
+  .sparkle.s3{ bottom:14%; left:14%; animation-delay:3s; }
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-10px) rotate(8deg); }
+  }
+  #bear-svg{ width:100%; max-width:340px; height:auto; }
+  .hidden{ display:none; }
+
+  .wardrobe{
+    background:var(--card);
+    border:2px solid var(--border);
+    border-radius:28px;
+    box-shadow:var(--shadow);
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .tabs{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .tab-btn{
+    font-family:'Gowun Dodum',sans-serif;
+    font-size:14px;
+    border:2px solid transparent;
+    background:var(--panel);
+    color:var(--ink-soft);
+    padding:8px 14px;
+    border-radius:14px;
+    cursor:pointer;
+  }
+  .tab-btn.active{
+    background:var(--honey);
+    color:#3A2410;
+    font-weight:700;
+    border-color:var(--honey-deep);
+  }
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+  .panel-title{
+    margin:0 0 10px;
+    font-size:13px;
+    color:var(--ink-soft);
+    letter-spacing:.04em;
+  }
+  .swatch-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(78px,1fr));
+    gap:10px;
+  }
+  .swatch{
+    border:2px solid var(--border);
+    background:var(--panel);
+    border-radius:16px;
+    padding:8px 6px 7px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .swatch:hover{ border-color:var(--honey-deep); }
+  .swatch.active{
+    background:color-mix(in srgb, var(--honey) 28%, var(--panel));
+    border-color:var(--honey-deep);
+    box-shadow:0 0 0 2px color-mix(in srgb, var(--honey) 55%, transparent);
+  }
+  .swatch svg{ width:38px; height:38px; }
+  .swatch span{
+    font-size:11.5px;
+    text-align:center;
+    line-height:1.25;
+  }
+  .swatch.none-swatch svg{ opacity:.5; }
+
+  footer{
+    text-align:center;
+    font-size:12.5px;
+    color:var(--ink-soft);
+  }
+</style>
+
+<div class="page">
+  <header>
+    <div>
+      <h1>곰돌이 옷장 🐻</h1>
+      <p class="subtitle">상의, 하의, 한벌옷, 리본, 넥타이, 안경으로 곰돌이를 코디해보세요.</p>
+    </div>
+    <div class="toolbar">
+      <button class="tool-btn" id="btn-reset" type="button">초기화</button>
+      <button class="tool-btn primary" id="btn-random" type="button">랜덤 코디 🎲</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="stage" aria-label="곰돌이 미리보기">
+      <span class="sparkle s1">✨</span>
+      <span class="sparkle s2">🌟</span>
+      <span class="sparkle s3">💛</span>
+      <svg id="bear-svg" viewBox="0 0 360 480" role="img" aria-label="옷을 입은 곰돌이">
+        <defs>
+          <pattern id="pat-stripe-red" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="16" height="16" fill="#F6E9D8"/><rect width="8" height="16" fill="#D6553F"/>
+          </pattern>
+          <pattern id="pat-dot-yellow" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#F2C94C"/><circle cx="10" cy="10" r="4" fill="#FFF8E7"/>
+          </pattern>
+          <pattern id="pat-star-mint" width="26" height="26" patternUnits="userSpaceOnUse">
+            <rect width="26" height="26" fill="#8FC7B0"/>
+            <path d="M13 4 L15 10 L21 10 L16 14 L18 20 L13 16 L8 20 L10 14 L5 10 L11 10 Z" fill="#EAF6EF"/>
+          </pattern>
+          <pattern id="pat-denim" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="10" height="10" fill="#5B7DA6"/><rect width="10" height="2" fill="#4C6C90"/>
+          </pattern>
+          <pattern id="pat-pink-dot" width="18" height="18" patternUnits="userSpaceOnUse">
+            <rect width="18" height="18" fill="#F1A7B9"/><circle cx="9" cy="9" r="3.4" fill="#FCE4EA"/>
+          </pattern>
+          <pattern id="pat-star-purple" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect width="24" height="24" fill="#9C86C9"/>
+            <path d="M12 4 L14 10 L20 10 L15 13 L17 19 L12 15 L7 19 L9 13 L4 10 L10 10 Z" fill="#EFE9FB"/>
+          </pattern>
+          <pattern id="pat-check" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#F6EFE1"/><rect width="10" height="10" fill="#D98A5E"/><rect x="10" y="10" width="10" height="10" fill="#D98A5E"/>
+          </pattern>
+          <pattern id="pat-navy-dot" width="16" height="16" patternUnits="userSpaceOnUse">
+            <rect width="16" height="16" fill="#33456B"/><circle cx="8" cy="8" r="2.6" fill="#EDEFF5"/>
+          </pattern>
+          <pattern id="pat-pink-stripe" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="14" height="14" fill="#FCE4EA"/><rect width="7" height="14" fill="#E98CA6"/>
+          </pattern>
+          <pattern id="pat-navy-stripe" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="14" height="14" fill="#3C4E75"/><rect width="7" height="14" fill="#28304A"/>
+          </pattern>
+          <pattern id="pat-green-plaid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect width="20" height="20" fill="#5C8862"/><rect width="20" height="4" fill="#3E6248"/><rect width="4" height="20" fill="#3E6248"/>
+          </pattern>
+        </defs>
+
+        <ellipse cx="180" cy="452" rx="98" ry="16" fill="rgba(58,36,20,0.15)"/>
+
+        <g id="legs">
+          <ellipse cx="140" cy="400" rx="34" ry="55" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="220" cy="400" rx="34" ry="55" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="140" cy="440" rx="26" ry="18" fill="#F5E3C4" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="220" cy="440" rx="26" ry="18" fill="#F5E3C4" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+
+        <ellipse cx="180" cy="300" rx="98" ry="100" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+        <ellipse cx="180" cy="322" rx="58" ry="62" fill="#F5E3C4" opacity="0.9"/>
+
+        <g id="arms">
+          <ellipse cx="78" cy="280" rx="30" ry="72" transform="rotate(15 78 280)" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="282" cy="280" rx="30" ry="72" transform="rotate(-15 282 280)" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="63" cy="337" r="22" fill="#F5E3C4" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="297" cy="337" r="22" fill="#F5E3C4" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+
+        <!-- bottoms -->
+        <g id="bottom-1" class="hidden">
+          <rect x="112" y="345" width="136" height="62" rx="28" fill="url(#pat-denim)" stroke="#3E2A1C" stroke-width="2"/>
+          <line x1="180" y1="345" x2="180" y2="407" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+        <g id="bottom-2" class="hidden">
+          <path d="M150,344 Q180,332 210,344 L231,410 Q180,426 129,410 Z" fill="url(#pat-pink-dot)" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+        <g id="bottom-3" class="hidden">
+          <rect x="114" y="345" width="132" height="76" rx="22" fill="url(#pat-star-purple)" stroke="#3E2A1C" stroke-width="2"/>
+          <line x1="180" y1="345" x2="180" y2="421" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+
+        <!-- one-piece -->
+        <g id="one-1" class="hidden">
+          <rect x="118" y="342" width="124" height="80" rx="20" fill="url(#pat-denim)" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M118,342 L150,240 L210,240 L242,342 Z" fill="url(#pat-denim)" stroke="#3E2A1C" stroke-width="2"/>
+          <rect x="150" y="196" width="16" height="60" rx="6" fill="url(#pat-denim)" stroke="#3E2A1C" stroke-width="2"/>
+          <rect x="194" y="196" width="16" height="60" rx="6" fill="url(#pat-denim)" stroke="#3E2A1C" stroke-width="2"/>
+          <rect x="164" y="280" width="32" height="26" rx="4" fill="#4C6C90" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="158" cy="252" r="5" fill="#EFE9DB" stroke="#3E2A1C" stroke-width="1.5"/>
+          <circle cx="202" cy="252" r="5" fill="#EFE9DB" stroke="#3E2A1C" stroke-width="1.5"/>
+        </g>
+        <g id="one-2" class="hidden">
+          <path d="M140,238 Q180,228 220,238 L260,430 Q180,452 100,430 Z" fill="url(#pat-check)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="112" cy="252" rx="24" ry="16" fill="url(#pat-check)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="248" cy="252" rx="24" ry="16" fill="url(#pat-check)" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+
+        <!-- tops -->
+        <g id="top-1" class="hidden">
+          <rect x="93" y="234" width="174" height="114" rx="40" fill="url(#pat-stripe-red)" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="95" cy="254" r="27" fill="url(#pat-stripe-red)" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="265" cy="254" r="27" fill="url(#pat-stripe-red)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="243" rx="19" ry="10" fill="#C68A52"/>
+        </g>
+        <g id="top-2" class="hidden">
+          <rect x="93" y="234" width="174" height="114" rx="40" fill="url(#pat-dot-yellow)" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="95" cy="254" r="27" fill="url(#pat-dot-yellow)" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="265" cy="254" r="27" fill="url(#pat-dot-yellow)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="243" rx="19" ry="10" fill="#C68A52"/>
+        </g>
+        <g id="top-3" class="hidden">
+          <rect x="93" y="234" width="174" height="114" rx="40" fill="url(#pat-star-mint)" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="95" cy="254" r="27" fill="url(#pat-star-mint)" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="265" cy="254" r="27" fill="url(#pat-star-mint)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="243" rx="19" ry="10" fill="#C68A52"/>
+        </g>
+
+        <!-- neckwear -->
+        <g id="neck-ribbon-1" class="hidden">
+          <path d="M180,258 L145,240 L145,276 Z" fill="#D6553F" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M180,258 L215,240 L215,276 Z" fill="#D6553F" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="258" rx="13" ry="11" fill="#B8442F" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+        <g id="neck-ribbon-2" class="hidden">
+          <path d="M180,258 L145,240 L145,276 Z" fill="url(#pat-navy-dot)" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M180,258 L215,240 L215,276 Z" fill="url(#pat-navy-dot)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="258" rx="13" ry="11" fill="#2B3A5C" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+        <g id="neck-ribbon-3" class="hidden">
+          <path d="M180,258 L145,240 L145,276 Z" fill="url(#pat-pink-stripe)" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M180,258 L215,240 L215,276 Z" fill="url(#pat-pink-stripe)" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="258" rx="13" ry="11" fill="#E1789A" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+
+        <g id="neck-tie-1" class="hidden">
+          <path d="M166,248 L194,248 L180,268 Z" fill="#B8442F" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M171,268 L189,268 L182,345 L180,352 L178,345 Z" fill="#D6553F" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+        <g id="neck-tie-2" class="hidden">
+          <path d="M166,248 L194,248 L180,268 Z" fill="#28304A" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M171,268 L189,268 L182,345 L180,352 L178,345 Z" fill="url(#pat-navy-stripe)" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+        <g id="neck-tie-3" class="hidden">
+          <path d="M166,248 L194,248 L180,268 Z" fill="#3E6248" stroke="#3E2A1C" stroke-width="2"/>
+          <path d="M171,268 L189,268 L182,345 L180,352 L178,345 Z" fill="url(#pat-green-plaid)" stroke="#3E2A1C" stroke-width="2"/>
+        </g>
+
+        <!-- head -->
+        <g id="head">
+          <circle cx="100" cy="76" r="38" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="260" cy="76" r="38" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <circle cx="100" cy="79" r="19" fill="#F5E3C4"/>
+          <circle cx="260" cy="79" r="19" fill="#F5E3C4"/>
+          <circle cx="180" cy="150" r="98" fill="#C68A52" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="125" cy="166" rx="14" ry="9" fill="#EFA9A0" opacity="0.55"/>
+          <ellipse cx="235" cy="166" rx="14" ry="9" fill="#EFA9A0" opacity="0.55"/>
+          <ellipse cx="180" cy="179" rx="56" ry="44" fill="#F5E3C4" stroke="#3E2A1C" stroke-width="2"/>
+          <ellipse cx="180" cy="158" rx="15" ry="11" fill="#3E2A1C"/>
+          <line x1="180" y1="169" x2="180" y2="180" stroke="#3E2A1C" stroke-width="3"/>
+          <path d="M164,180 Q180,194 196,180" fill="none" stroke="#3E2A1C" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="148" cy="132" r="9" fill="#3E2A1C"/>
+          <circle cx="212" cy="132" r="9" fill="#3E2A1C"/>
+          <circle cx="151" cy="129" r="2.4" fill="#FFF8E7"/>
+          <circle cx="215" cy="129" r="2.4" fill="#FFF8E7"/>
+        </g>
+
+        <g id="glasses-1" class="hidden">
+          <circle cx="148" cy="134" r="24" fill="rgba(255,255,255,0.12)" stroke="#3E2A1C" stroke-width="4"/>
+          <circle cx="212" cy="134" r="24" fill="rgba(255,255,255,0.12)" stroke="#3E2A1C" stroke-width="4"/>
+          <path d="M172,132 Q180,126 188,132" fill="none" stroke="#3E2A1C" stroke-width="4"/>
+          <path d="M124,130 L104,120" stroke="#3E2A1C" stroke-width="4" stroke-linecap="round"/>
+          <path d="M236,130 L256,120" stroke="#3E2A1C" stroke-width="4" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="wardrobe">
+      <div class="tabs" role="tablist" aria-label="옷 카테고리">
+        <button class="tab-btn active" data-tab="top" type="button">상의</button>
+        <button class="tab-btn" data-tab="bottom" type="button">하의</button>
+        <button class="tab-btn" data-tab="onepiece" type="button">한벌옷</button>
+        <button class="tab-btn" data-tab="ribbon" type="button">리본</button>
+        <button class="tab-btn" data-tab="tie" type="button">넥타이</button>
+        <button class="tab-btn" data-tab="glasses" type="button">안경</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="top">
+        <p class="panel-title">상의 · 하나를 골라보세요</p>
+        <div class="swatch-grid" data-cat="top">
+          <button class="swatch none-swatch" data-val="none"><span>없음</span></button>
+          <button class="swatch" data-val="1"><span>딸기 줄무늬 티셔츠</span></button>
+          <button class="swatch" data-val="2"><span>해바라기 땡땡이 티셔츠</span></button>
+          <button class="swatch" data-val="3"><span>민트 별무늬 티셔츠</span></button>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="bottom">
+        <p class="panel-title">하의 · 하나를 골라보세요</p>
+        <div class="swatch-grid" data-cat="bottom">
+          <button class="swatch none-swatch" data-val="none"><span>없음</span></button>
+          <button class="swatch" data-val="1"><span>데님 반바지</span></button>
+          <button class="swatch" data-val="2"><span>딸기 치마</span></button>
+          <button class="swatch" data-val="3"><span>별무늬 바지</span></button>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="onepiece">
+        <p class="panel-title">한벌옷 · 상/하의 대신 입어요</p>
+        <div class="swatch-grid" data-cat="onepiece">
+          <button class="swatch none-swatch" data-val="none"><span>없음</span></button>
+          <button class="swatch" data-val="1"><span>데님 멜빵바지</span></button>
+          <button class="swatch" data-val="2"><span>체크 원피스</span></button>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="ribbon">
+        <p class="panel-title">리본 · 목에 매줘요</p>
+        <div class="swatch-grid" data-cat="ribbon">
+          <button class="swatch none-swatch" data-val="none"><span>없음</span></button>
+          <button class="swatch" data-val="1"><span>빨강 리본</span></button>
+          <button class="swatch" data-val="2"><span>남색 물방울 리본</span></button>
+          <button class="swatch" data-val="3"><span>분홍 줄무늬 리본</span></button>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="tie">
+        <p class="panel-title">넥타이 · 목에 매줘요</p>
+        <div class="swatch-grid" data-cat="tie">
+          <button class="swatch none-swatch" data-val="none"><span>없음</span></button>
+          <button class="swatch" data-val="1"><span>빨강 넥타이</span></button>
+          <button class="swatch" data-val="2"><span>남색 줄무늬 넥타이</span></button>
+          <button class="swatch" data-val="3"><span>초록 체크 넥타이</span></button>
+        </div>
+      </div>
+
+      <div class="tab-panel" data-panel="glasses">
+        <p class="panel-title">안경</p>
+        <div class="swatch-grid" data-cat="glasses">
+          <button class="swatch none-swatch" data-val="none"><span>없음</span></button>
+          <button class="swatch" data-val="1"><span>동그란 안경</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>리본과 넥타이는 같은 자리에 착용돼요 · 한벌옷을 고르면 상/하의가 자동으로 벗겨져요</footer>
+</div>
+
+<script>
+(function(){
+  const NS = "http://www.w3.org/2000/svg";
+  function icon(paths, fill){
+    const strokeAttrs = 'stroke="#4A2F22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+    return '<svg viewBox="0 0 40 40" aria-hidden="true">' + paths(fill, strokeAttrs) + '</svg>';
+  }
+  const shirtPath = (fill) => `<path d="M13 3 L20 8 L27 3 L34 10 L29 16 L26 13 L26 36 L14 36 L14 13 L11 16 L6 10 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/>`;
+  const bottomPath = (fill) => `<path d="M9 5 H31 L29 34 H21 L20 16 L19 34 H11 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/>`;
+  const onePath = (fill) => `<path d="M10 10 H30 L34 36 H6 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/><rect x="15" y="2" width="4" height="9" fill="${fill}" stroke="#4A2F22" stroke-width="1.5"/><rect x="21" y="2" width="4" height="9" fill="${fill}" stroke="#4A2F22" stroke-width="1.5"/>`;
+  const ribbonPath = (fill) => `<path d="M20 20 L6 12 V28 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/><path d="M20 20 L34 12 V28 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/><circle cx="20" cy="20" r="4" fill="#4A2F22"/>`;
+  const tiePath = (fill) => `<path d="M15 5 H25 L20 14 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/><path d="M17 14 H23 L21 35 L20 38 L19 35 Z" fill="${fill}" stroke="#4A2F22" stroke-width="2" stroke-linejoin="round"/>`;
+  const glassesPath = () => `<circle cx="13" cy="20" r="9" fill="none" stroke="#4A2F22" stroke-width="3"/><circle cx="27" cy="20" r="9" fill="none" stroke="#4A2F22" stroke-width="3"/><path d="M22 20 Q20 17 18 20" fill="none" stroke="#4A2F22" stroke-width="3"/><path d="M4 18 L1 15" stroke="#4A2F22" stroke-width="3" stroke-linecap="round"/><path d="M36 18 L39 15" stroke="#4A2F22" stroke-width="3" stroke-linecap="round"/>`;
+  const nonePath = () => `<circle cx="20" cy="20" r="14" fill="none" stroke="#8B5E3C" stroke-width="2" stroke-dasharray="3 4"/><line x1="11" y1="29" x2="29" y2="11" stroke="#8B5E3C" stroke-width="2"/>`;
+
+  const ICONS = {
+    none: icon(nonePath),
+    top: {1:'url(#pat-stripe-red)',2:'url(#pat-dot-yellow)',3:'url(#pat-star-mint)'},
+    bottom: {1:'url(#pat-denim)',2:'url(#pat-pink-dot)',3:'url(#pat-star-purple)'},
+    onepiece: {1:'url(#pat-denim)',2:'url(#pat-check)'},
+    ribbon: {1:'#D6553F',2:'url(#pat-navy-dot)',3:'url(#pat-pink-stripe)'},
+    tie: {1:'#D6553F',2:'url(#pat-navy-stripe)',3:'url(#pat-green-plaid)'}
+  };
+
+  function fillGrid(cat, pathFn){
+    document.querySelectorAll('.swatch-grid[data-cat="'+cat+'"] .swatch').forEach(btn=>{
+      const v = btn.dataset.val;
+      if(v === 'none'){ btn.insertAdjacentHTML('afterbegin', ICONS.none); return; }
+      const fill = ICONS[cat][v];
+      btn.insertAdjacentHTML('afterbegin', icon(pathFn, fill));
+    });
+  }
+  fillGrid('top', shirtPath);
+  fillGrid('bottom', bottomPath);
+  fillGrid('onepiece', onePath);
+  fillGrid('ribbon', ribbonPath);
+  fillGrid('tie', tiePath);
+  document.querySelector('.swatch-grid[data-cat="glasses"] .swatch[data-val="1"]').insertAdjacentHTML('afterbegin', icon(glassesPath, null));
+  document.querySelector('.swatch-grid[data-cat="glasses"] .swatch[data-val="none"]').insertAdjacentHTML('afterbegin', ICONS.none);
+
+  // ---- state & rendering ----
+  const state = { top:null, bottom:null, onepiece:null, neck:null, glasses:false };
+
+  function hideAll(prefix, count){
+    for(let i=1;i<=count;i++){ document.getElementById(prefix+i).classList.add('hidden'); }
+  }
+  function show(id){ document.getElementById(id).classList.remove('hidden'); }
+
+  function render(){
+    hideAll('top-',3); hideAll('bottom-',3); hideAll('one-',2);
+    hideAll('neck-ribbon-',3); hideAll('neck-tie-',3);
+    document.getElementById('glasses-1').classList.toggle('hidden', !state.glasses);
+
+    if(state.onepiece){ show('one-'+state.onepiece); }
+    else{
+      if(state.top) show('top-'+state.top);
+      if(state.bottom) show('bottom-'+state.bottom);
+    }
+    if(state.neck) show('neck-'+state.neck);
+
+    document.querySelectorAll('.swatch').forEach(btn=>{
+      const cat = btn.closest('.swatch-grid').dataset.cat;
+      const v = btn.dataset.val;
+      let active = false;
+      if(cat==='top') active = (state.top === (v==='none'?null:v));
+      if(cat==='bottom') active = (state.bottom === (v==='none'?null:v));
+      if(cat==='onepiece') active = (state.onepiece === (v==='none'?null:v));
+      if(cat==='ribbon') active = (state.neck === (v==='none'?null:'ribbon-'+v));
+      if(cat==='tie') active = (state.neck === (v==='none'?null:'tie-'+v));
+      if(cat==='glasses') active = (v==='none' ? !state.glasses : state.glasses);
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true':'false');
+    });
+  }
+
+  document.querySelectorAll('.swatch-grid').forEach(grid=>{
+    grid.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.swatch');
+      if(!btn) return;
+      const cat = grid.dataset.cat;
+      const v = btn.dataset.val;
+      if(cat==='top'){ state.top = (v==='none'?null:v); state.onepiece = null; }
+      else if(cat==='bottom'){ state.bottom = (v==='none'?null:v); state.onepiece = null; }
+      else if(cat==='onepiece'){ state.onepiece = (v==='none'?null:v); }
+      else if(cat==='ribbon'){ state.neck = (v==='none'?null:'ribbon-'+v); }
+      else if(cat==='tie'){ state.neck = (v==='none'?null:'tie-'+v); }
+      else if(cat==='glasses'){ state.glasses = (v!=='none'); }
+      render();
+    });
+  });
+
+  document.querySelectorAll('.tab-btn').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelector('.tab-panel[data-panel="'+tab.dataset.tab+'"]').classList.add('active');
+    });
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', ()=>{
+    state.top=null; state.bottom=null; state.onepiece=null; state.neck=null; state.glasses=false;
+    render();
+  });
+
+  document.getElementById('btn-random').addEventListener('click', ()=>{
+    const useOnepiece = Math.random() < 0.4;
+    if(useOnepiece){
+      state.onepiece = String(1 + Math.floor(Math.random()*2));
+      state.top = null; state.bottom = null;
+    } else {
+      state.onepiece = null;
+      state.top = Math.random() < 0.85 ? String(1+Math.floor(Math.random()*3)) : null;
+      state.bottom = Math.random() < 0.85 ? String(1+Math.floor(Math.random()*3)) : null;
+    }
+    const neckRoll = Math.random();
+    if(neckRoll < 0.4) state.neck = 'ribbon-'+(1+Math.floor(Math.random()*3));
+    else if(neckRoll < 0.8) state.neck = 'tie-'+(1+Math.floor(Math.random()*3));
+    else state.neck = null;
+    state.glasses = Math.random() < 0.5;
+    render();
+  });
+
+  render();
+})();
+</script>
